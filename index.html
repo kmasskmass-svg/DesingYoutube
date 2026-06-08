@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>الأخلاق التجارية | شاشة يوتيوب تفاعلية</title>
+    <title>الأخلاق التجارية | شاشة يوتيوب متكاملة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&family=Almarai:wght@400;700;800&family=Noto+Kufi+Arabic:wght@400;700&family=Changa:wght@400;600;800&family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -58,28 +58,55 @@
             text-align: center;
             background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%);
             padding: 20px;
+            pointer-events: none;
         }
         #outTitle {
             font-size: clamp(1.8rem, 6vw, 3.8rem);
             font-weight: 900;
             margin: 0;
             text-shadow: 0 4px 20px black;
+            pointer-events: none;
         }
-        #outSpeaker {
-            font-size: clamp(0.9rem, 3.5vw, 1.3rem);
+        /* مربع المتحدث (الزهراني) منفصل وقابل للتعديل */
+        .speaker-editable {
             margin-top: 12px;
-            padding: 6px 24px;
-            border-radius: 60px;
+            display: inline-block;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(8px);
-            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 60px;
             font-weight: 700;
             border-width: 2px;
             border-style: solid;
+            cursor: pointer;
+            transition: 0.2s;
+            pointer-events: auto;
         }
+        .speaker-editable span {
+            font-size: clamp(0.9rem, 3.5vw, 1.3rem);
+        }
+        .speaker-editable:hover {
+            transform: scale(1.02);
+            background: rgba(0,0,0,0.8);
+        }
+        .speaker-input {
+            margin-top: 12px;
+            background: #1e1e2e;
+            border: 1px solid #f1c40f;
+            border-radius: 60px;
+            padding: 6px 20px;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+            display: none;
+            width: auto;
+            min-width: 200px;
+            pointer-events: auto;
+        }
+        /* مربع "تصميم فاخر" في أسفل اليمين */
         .corner-text {
             position: absolute;
-            bottom: 16px;
+            bottom: 20px;
             right: 20px;
             z-index: 20;
             background: rgba(0,0,0,0.6);
@@ -92,10 +119,15 @@
             border-right: 3px solid #f1c40f;
             cursor: pointer;
             transition: 0.2s;
+            pointer-events: auto;
+        }
+        .corner-text:hover {
+            background: rgba(0,0,0,0.8);
+            transform: scale(1.02);
         }
         .corner-edit {
             position: absolute;
-            bottom: 16px;
+            bottom: 20px;
             right: 20px;
             z-index: 25;
             background: #1e1e2eef;
@@ -108,19 +140,65 @@
             width: auto;
             min-width: 150px;
             display: none;
+            pointer-events: auto;
         }
-        .video-overlay-actions {
+        /* مربع اسم القناة في أسفل اليسار */
+        .channel-editable {
             position: absolute;
             bottom: 20px;
             left: 20px;
+            z-index: 20;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #ffd966;
+            border-left: 3px solid #f1c40f;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            pointer-events: auto;
+        }
+        .channel-editable:hover {
+            background: rgba(0,0,0,0.8);
+            transform: scale(1.02);
+        }
+        .channel-editable span { max-width: 200px; white-space: nowrap; overflow-x: auto; }
+        .channel-input {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: #1e1e2eef;
+            border: 1px solid #f1c40f;
+            border-radius: 40px;
+            padding: 5px 12px;
+            color: white;
+            font-size: 0.85rem;
+            width: auto;
+            min-width: 180px;
+            display: none;
+            z-index: 25;
+            pointer-events: auto;
+        }
+        /* شريط أزرار التفاعل (وسط أسفل) */
+        .video-overlay-actions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 15;
             display: flex;
             gap: 12px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(12px);
-            padding: 8px 16px;
+            padding: 8px 20px;
             border-radius: 50px;
-            border: 1px solid rgba(255,215,0,0.3);
+            border: 1px solid rgba(255,215,0,0.4);
+            pointer-events: auto;
         }
         .overlay-icon-btn {
             background: rgba(255,255,255,0.15);
@@ -143,37 +221,7 @@
         .subscribe-overlay { background: #cc0000; }
         .subscribe-overlay.subscribed { background: #272727; color: #aaa; }
         .play-pause-overlay { background: #f1c40f; color: #1e1e2a; }
-        .channel-editable {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            z-index: 15;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            color: #ffd966;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .channel-editable span { max-width: 180px; white-space: nowrap; overflow-x: auto; }
-        .channel-input {
-            position: absolute;
-            bottom: 20px;
-            left: auto;
-            right: 20px;
-            background: #1e1e2e;
-            border: 1px solid #f1c40f;
-            border-radius: 40px;
-            padding: 4px 12px;
-            color: white;
-            font-size: 0.75rem;
-            display: none;
-            z-index: 25;
-        }
+        
         #vizCanvas {
             position: absolute;
             top: 0;
@@ -183,6 +231,7 @@
             z-index: 5;
             pointer-events: none;
         }
+        /* لوحة الإعدادات */
         .settings-panel {
             position: fixed;
             bottom: 80px;
@@ -246,7 +295,8 @@
         @media (max-width: 700px) {
             .video-overlay-actions { gap: 6px; padding: 5px 12px; }
             .overlay-icon-btn { padding: 4px 10px; font-size: 0.7rem; }
-            .channel-editable { font-size: 0.65rem; max-width: 150px; }
+            .channel-editable { font-size: 0.7rem; max-width: 140px; }
+            .corner-text { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -259,15 +309,21 @@
             <canvas id="vizCanvas"></canvas>
             <div class="text-overlay">
                 <h1 id="outTitle">الأخلاق التجارية</h1>
-                <div id="outSpeaker">كليب بن أحمد الزهراني</div>
+                <div id="speakerBox" class="speaker-editable" onclick="activateSpeakerEdit()">
+                    <span id="outSpeaker">كليب بن أحمد الزهراني</span>
+                </div>
+                <input type="text" id="speakerInput" class="speaker-input" placeholder="اسم المتحدث">
             </div>
+            <!-- مربع النص السفلي (يمين) -->
             <div id="cornerTextDisplay" class="corner-text" onclick="activateCornerEdit()">✨ تصميم فاخر</div>
             <input type="text" id="cornerTextInput" class="corner-edit" placeholder="اكتب نصاً...">
+            <!-- مربع اسم القناة (يسار) -->
             <div id="channelNameDisplay" class="channel-editable" onclick="activateChannelEdit()">
                 <span id="channelNameSpan">قناة الأخلاقيات | كليب الزهراني</span>
                 <i class="fas fa-pen"></i>
             </div>
             <input type="text" id="channelNameInput" class="channel-input" placeholder="اسم القناة">
+            <!-- أزرار التفاعل في الوسط -->
             <div class="video-overlay-actions">
                 <button id="likeOverlayBtn" class="overlay-icon-btn"><i class="far fa-thumbs-up"></i> <span id="likeCountOverlay">١٢٤</span></button>
                 <button id="subscribeOverlayBtn" class="overlay-icon-btn subscribe-overlay">اشترك <i class="far fa-bell"></i></button>
@@ -284,7 +340,7 @@
 <div id="advancedSettings" class="settings-panel">
     <div class="settings-header"><strong>الإعدادات المتقدمة</strong><span id="closeSettingsBtn" class="close-settings">✖</span></div>
     <label>📝 عنوان العرض</label><input type="text" id="inTitle" value="الأخلاق التجارية">
-    <label>🎙️ اسم المتحدث</label><input type="text" id="inSpeaker" value="كليب بن أحمد الزهراني">
+    <label>🎙️ اسم المتحدث (افتراضي)</label><input type="text" id="inSpeaker" value="كليب بن أحمد الزهراني">
     <label>✒️ الخط (اختر من 7 خطوط)</label>
     <select id="fontSelect">
         <option value="Cairo">كايرو</option><option value="Amiri">أميري</option><option value="Tajawal">تجوال</option>
@@ -310,7 +366,9 @@
 <script>
     // عناصر DOM
     const outTitle = document.getElementById('outTitle');
-    const outSpeaker = document.getElementById('outSpeaker');
+    const outSpeakerSpan = document.getElementById('outSpeaker');
+    const speakerBox = document.getElementById('speakerBox');
+    const speakerInput = document.getElementById('speakerInput');
     const bgImage = document.getElementById('bgImage');
     const vizCanvas = document.getElementById('vizCanvas');
     const audioElem = document.getElementById('audioElement');
@@ -330,7 +388,7 @@
     const settingsToggleBtn = document.getElementById('settingsToggleBtn');
     const closeSettingsBtn = document.getElementById('closeSettingsBtn');
     const inTitle = document.getElementById('inTitle');
-    const inSpeaker = document.getElementById('inSpeaker');
+    const inSpeakerHidden = document.getElementById('inSpeaker');
     const fontSelect = document.getElementById('fontSelect');
     const colorPicker = document.getElementById('colorPicker');
     const imgUpload = document.getElementById('imgUpload');
@@ -351,18 +409,39 @@
     // تحديث النصوص والألوان
     function updateTextAndStyle() {
         outTitle.innerText = inTitle.value;
-        outSpeaker.innerText = inSpeaker.value;
+        outSpeakerSpan.innerText = inSpeakerHidden.value;
         const chosenFont = fontSelect.value;
         const textColor = colorPicker.value;
         outTitle.style.fontFamily = chosenFont;
-        outSpeaker.style.fontFamily = chosenFont;
+        outSpeakerSpan.style.fontFamily = chosenFont;
+        speakerBox.style.fontFamily = chosenFont;
         outTitle.style.color = textColor;
         outTitle.style.textShadow = `0 2px 12px black`;
-        outSpeaker.style.color = textColor;
-        outSpeaker.style.borderColor = textColor;
+        outSpeakerSpan.style.color = textColor;
+        speakerBox.style.borderColor = textColor;
+        speakerBox.style.color = textColor;
     }
     
-    // تعديل اسم القناة
+    // تعديل اسم المتحدث
+    function activateSpeakerEdit() {
+        speakerInput.style.display = 'inline-block';
+        speakerInput.value = outSpeakerSpan.innerText;
+        speakerInput.focus();
+        const saveSpeaker = () => {
+            let newName = speakerInput.value.trim();
+            if(newName === "") newName = "متحدث غير معروف";
+            outSpeakerSpan.innerText = newName;
+            inSpeakerHidden.value = newName;
+            speakerInput.style.display = 'none';
+            speakerInput.removeEventListener('blur', saveSpeaker);
+            speakerInput.removeEventListener('keypress', keyHandler);
+        };
+        const keyHandler = (e) => { if(e.key === 'Enter') saveSpeaker(); };
+        speakerInput.addEventListener('blur', saveSpeaker);
+        speakerInput.addEventListener('keypress', keyHandler);
+    }
+    
+    // تعديل اسم القناة (يسار)
     function activateChannelEdit() {
         channelNameInput.style.display = 'block';
         channelNameInput.value = channelNameSpan.innerText;
@@ -380,7 +459,7 @@
         channelNameInput.addEventListener('keypress', keyHandler);
     }
     
-    // تعديل النص السفلي
+    // تعديل النص السفلي (يمين)
     function activateCornerEdit() {
         cornerTextInput.style.display = 'block';
         cornerTextInput.value = cornerTextDisplay.innerText;
@@ -402,6 +481,7 @@
         cornerTextInput.addEventListener('keypress', keyHandler);
     }
     
+    // أزرار التفاعل
     function updateLikeUI() {
         likeOverlayBtn.querySelector('i').className = liked ? "fas fa-thumbs-up" : "far fa-thumbs-up";
         if(liked) likeOverlayBtn.classList.add('liked');
@@ -421,6 +501,7 @@
     subscribeOverlayBtn.onclick = () => { subscribed = !subscribed; updateSubscribeUI(); };
     shareOverlayBtn.onclick = () => alert('🔗 تم مشاركة الرابط (تجريبي)');
     
+    // التحكم بالصوت
     async function togglePlayPause() {
         if(!audioElem.src || audioElem.src === '') {
             audioStatusSpan.innerHTML = "❓ حمل ملفًا صوتيًا من الإعدادات";
@@ -630,11 +711,11 @@
     vizColorPicker.oninput = (e) => { currentVizColor = e.target.value; if(isAudioActive) redrawFrame(); };
     vizSizeSlider.oninput = (e) => { currentSize = parseInt(e.target.value); if(isAudioActive) redrawFrame(); };
     inTitle.oninput = updateTextAndStyle;
-    inSpeaker.oninput = updateTextAndStyle;
+    inSpeakerHidden.oninput = () => { outSpeakerSpan.innerText = inSpeakerHidden.value; updateTextAndStyle(); };
     fontSelect.onchange = updateTextAndStyle;
     colorPicker.oninput = updateTextAndStyle;
     
-    // جعل زر الإعدادات يبدل بين الإظهار والإخفاء
+    // تبديل إظهار/إخفاء الإعدادات
     let settingsVisible = false;
     function toggleSettings() {
         if(settingsVisible) {
@@ -647,9 +728,7 @@
         settingsVisible = !settingsVisible;
     }
     settingsToggleBtn.onclick = toggleSettings;
-    closeSettingsBtn.onclick = () => {
-        if(settingsVisible) toggleSettings();
-    };
+    closeSettingsBtn.onclick = () => { if(settingsVisible) toggleSettings(); };
     
     updateTextAndStyle();
     updateLikeUI();
